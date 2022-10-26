@@ -1,0 +1,101 @@
+<div class="card">
+
+    <div class="row col-md-12"  >
+     
+            <p-calendar [(ngModel)]="dateValue" dateFormat="dd-mm-yy"></p-calendar>
+
+            <button type="button" pButton pRipple class="ui-button-raised ui-button-custom ml-3 pull right"
+                label="Buscar" (click)="findByDate()" >
+            </button>
+  
+        <hr>
+    </div>
+
+
+    <p-table #dt [value]="ventasList" [rows]="10" [paginator]="true"
+        [globalFilterFields]="['action','name','fecha','severity']" responsiveLayout="scroll" [rowHover]="true"
+        dataKey="id" currentPageReportTemplate="Mostrando {first} de {last} de un total de {totalRecords} registros"
+        [showCurrentPageReport]="true" >
+        <ng-template pTemplate="header">
+            <tr>
+                <th>N°<p-sortIcon></p-sortIcon>
+                </th>
+                <th pSortableColumn="venta.cliente.nombres">Cliente<p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="venta.fecha">Fecha <p-sortIcon field="venta.fecha"></p-sortIcon>
+                </th>
+                <th pSortableColumn="total">Total <p-sortIcon field="total"></p-sortIcon>
+                </th>
+                <th>Acción </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-ventasList let-rowIndex="rowIndex">
+            <tr>
+                <td>{{rowIndex+1}}</td>
+                <td>{{ventasList.venta.cliente.nombres +' '+ ventasList.venta.cliente.apellidos}}</td>
+                <td>{{ventasList.venta.fecha}}</td>
+                <td>S/ {{ventasList.total}}</td>
+                <td>
+                    <button pButton pRipple label="Ver" icon="pi pi-search" class="p-button-success p-mr-2"
+                        (click)="btnModalDetalleVenta(ventasList.venta.id)">
+                    </button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                // Existen {{ventasList ? ventasList.length : 0 }} ventas registradas.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+
+<p-dialog header="Detalle de Venta" [(visible)]="displayBasic" [modal]="true" [style]="{width: '50vw'}"
+    [baseZIndex]="10000" [draggable]="false">
+    <div class="container mt-3">
+
+        <div class="mt-3">
+            <p-card header="Cliente">
+
+                <ng-template pTemplate="header">
+                </ng-template>
+         
+                <div class="card">
+                    <p-table #dt [value]="ventaDetalleLst" [rows]="5" [paginator]="true"
+        [globalFilterFields]="['action','name','fecha','severity']" responsiveLayout="scroll" [rowHover]="true"
+        dataKey="id" 
+        [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="venta.cliente.nombres">Producto</th>
+                <th pSortableColumn="venta.fecha">Precio Unitario </th>
+                <th pSortableColumn="total">Cantidad </th>
+                <th pSortableColumn="total">SubTotal </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-ventaDetalleLst let-rowIndex="rowIndex">
+            <tr>
+                <td>{{ventaDetalleLst.producto.nombre}}</td>
+                <td>{{ventaDetalleLst.producto.precio}}</td>
+                <td>{{ventaDetalleLst.cantidad}}</td>
+                <td> S/ {{ventaDetalleLst.total}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                // Existen {{ventaDetalleLst ? ventaDetalleLst.length : 0 }} ventas registradas.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+            </p-card>
+        </div>
+    </div>
+
+
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="displayBasic=false" label="Ok" styleClass="p-button-text"></p-button>
+    </ng-template>
+</p-dialog>
